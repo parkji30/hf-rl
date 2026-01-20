@@ -7,7 +7,8 @@ import tqdm
 
 
 def create_q_table(state_space: int, action_space: int):
-    Qtable = np.zeros((state_space, action_space))
+    # Qtable = np.zeros((state_space, action_space))
+    Qtable = np.random.uniform(low=0, high=1, size=(state_space, action_space))
     return Qtable
 
 
@@ -102,8 +103,8 @@ def training_loop(
 
 
 if __name__ == "__main__":
-    n_training_episodes = 10000  # Num of training episodes
-    lr = 0.7  # learning rate
+    n_training_episodes = int(500000)  # Num of training episodes
+    lr = 0.9  # learning rate
     n_evals = 100  # num of testing episodes
 
     env_id = "FrozenLake-v1"
