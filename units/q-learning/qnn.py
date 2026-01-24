@@ -6,18 +6,22 @@ class QNN(nn.Module):
     """
     Neural Net over Q-Table
     """
-    def __init__(self):
+    def __init__(self, n_layers=3, input_dim=4, hidden_dim=10, output_dim=4):
         
         super().__init__()
 
         self.state_embedder = nn.Embedding(num_embeddings=64, embedding_dim=4)
-        self.ff_layers = nn.Sequential(
-            nn.Linear(4, 10),
-            nn.GELU(),
-            nn.Linear(10, 10),
-            nn.GELU(),
-            nn.Linear(10, 4) # The action space
-        )
+
+        mlp_layers = []
+        
+        in_features = input_dim
+        for _ in range(n_layers):
+            mlp_layers.append(nn.Linear(in_features, hidden_dim))
+            mlp_layers.append(nn.GELU())
+            in_features=hidden_dim
+        mlp_layers.append(nn.Linear(hidden_dim, output_dim))
+        self.ff_layers = nn.Sequential(*mlp_layers)
+
 
     def forward(self, x):
         # Embed our actions 
@@ -38,5 +42,4 @@ if __name__ == "__main__":
     index = torch.tensor([5])  # Just the index, shape [1]
     model = QNN(n_layers=5)
     output = model(index)  # Embedding handles the lookup, outputs [1, 4]
-    print(output)
-    print(f"The best action: {torch.argmax(output)}")
+    
