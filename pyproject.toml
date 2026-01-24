@@ -1,5 +1,5 @@
 [project]
-name = "hf-rl"
+name = "deep-rl"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
