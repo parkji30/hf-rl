@@ -1,10 +1,7 @@
 import numpy as np
 import gymnasium
-import random
-import imageio
-import os
-import tqdm
-
+from qnn import QNN
+from torch.optim import AdamW
 
 def create_q_table(state_space: int, action_space: int):
     # Qtable = np.zeros((state_space, action_space))
@@ -39,6 +36,23 @@ def epsilon_greedy_policy(q_table, state, epsilon, env):
         action = env.action_space.sample()
 
     return action
+
+def neural_training_loop(
+    env,
+    model, 
+    steps=10000, 
+    learning_rate=1e-4,
+):
+
+    state, info = env.info()
+    optimizer = AdamW(model.parameters(), lr=learning_rate)
+
+    for step in steps:
+        initial_action = np.randint(4)
+
+        new_state, reward, terminated_info, truncated_info = env.step(initial_action)
+
+        actions = model()
 
 
 def training_loop(
