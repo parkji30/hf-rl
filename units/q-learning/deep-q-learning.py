@@ -5,31 +5,32 @@ from torch.optim import AdamW
 from torch.nn import MSELoss
 import torch
 from tqdm import tqdm
-from collections import deque
-import random
+# from collections import deque
+# import random
 
 
-class ReplayBuffer:
-    """Store experiences and sample random batches for training."""
-    def __init__(self, capacity=10000):
-        self.buffer = deque(maxlen=capacity)
+# class ReplayBuffer:
+#     """Store experiences and sample random batches for training."""
+#     def __init__(self, capacity=10000):
+#         self.buffer = deque(maxlen=capacity)
     
-    def push(self, state, action, reward, next_state, done):
-        self.buffer.append((state, action, reward, next_state, done))
+#     def push(self, state, action, reward, next_state, done):
+#         self.buffer.append((state, action, reward, next_state, done))
     
-    def sample(self, batch_size):
-        batch = random.sample(self.buffer, batch_size)
-        states, actions, rewards, next_states, dones = zip(*batch)
-        return (
-            torch.tensor(states, dtype=torch.long),
-            torch.tensor(actions, dtype=torch.long),
-            torch.tensor(rewards, dtype=torch.float32),
-            torch.tensor(next_states, dtype=torch.long),
-            torch.tensor(dones, dtype=torch.bool)
-        )
+#     def sample(self, batch_size):
+#         batch = random.sample(self.buffer, batch_size)
+#         states, actions, rewards, next_states, dones = zip(*batch)
+#         return (
+#             torch.tensor(states, dtype=torch.long),
+#             torch.tensor(actions, dtype=torch.long),
+#             torch.tensor(rewards, dtype=torch.float32),
+#             torch.tensor(next_states, dtype=torch.long),
+#             torch.tensor(dones, dtype=torch.bool)
+#         )
     
-    def __len__(self):
-        return len(self.buffer)
+#     def __len__(self):
+#         return len(self.buffer)
+
 
 def neural_training_loop(
     env,
@@ -41,7 +42,7 @@ def neural_training_loop(
     loss_fn=MSELoss()
 ):
     state, info = env.reset()
-    print(f"The environment state: {info}")
+    print("The environment state: {}".format(info))
 
     optimizer = AdamW(model.parameters(), lr=learning_rate)
 
@@ -93,9 +94,6 @@ def neural_training_loop(
                 # After termination
                 state, info = env.reset()
                 break
-
-            
-        
     return model
 
 
@@ -140,4 +138,4 @@ if __name__ == "__main__":
 
             best_action = torch.argmax(q_values).item()
             action_names = ["LEFT", "DOWN", "RIGHT", "UP"]
-            print(f"State {state:2d}: {q_values.numpy()} -> Best: {action_names[best_action]}")
+            print("State {:2d}: {} -> Best: {}".format(state, q_values.numpy(), action_names[best_action]))
